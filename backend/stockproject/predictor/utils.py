@@ -15,7 +15,7 @@ if not hasattr(np, 'NaT'):
     import pandas._libs.tslibs.nattype as nattype
     np.NaT = nattype.NaT
 
-import pandas_ta as ta
+import pandas_ta_classic as ta
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "models")
