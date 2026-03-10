@@ -1,0 +1,21 @@
+{
+  "symbol": "BAJFINANCE.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    645.8499755859375,
+    960.75
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.8999999999999999
+  ],
+  "test_mae": 18.84541015625,
+  "test_rmse": 21.494045860119755,
+  "training_history": {
+    "final_loss": 0.04932359606027603,
+    "final_val_loss": 0.033857375383377075
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "AXISBANK.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    948.0999755859375,
+    1277.0999755859375
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.9000000000000004
+  ],
+  "test_mae": 21.866845703125,
+  "test_rmse": 22.415939308456053,
+  "training_history": {
+    "final_loss": 0.033580075949430466,
+    "final_val_loss": 0.009185967035591602
+  }
+}

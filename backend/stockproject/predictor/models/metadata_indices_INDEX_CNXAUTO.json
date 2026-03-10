@@ -1,0 +1,21 @@
+{
+  "symbol": "^CNXAUTO",
+  "asset_type": "indices",
+  "model_type": "transformer",
+  "training_data_points": 229,
+  "sequence_length": 60,
+  "price_range": [
+    19815.55078125,
+    27610.75
+  ],
+  "scaled_range": [
+    0.0,
+    1.0
+  ],
+  "test_mae": 1772.969921875,
+  "test_rmse": 1812.609970734637,
+  "training_history": {
+    "final_loss": 0.04424033313989639,
+    "final_val_loss": 0.05616651475429535
+  }
+}

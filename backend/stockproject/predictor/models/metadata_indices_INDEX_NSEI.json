@@ -1,0 +1,21 @@
+{
+  "symbol": "^NSEI",
+  "asset_type": "indices",
+  "model_type": "transformer",
+  "training_data_points": 230,
+  "sequence_length": 60,
+  "price_range": [
+    22082.650390625,
+    26216.05078125
+  ],
+  "scaled_range": [
+    0.0,
+    1.0
+  ],
+  "test_mae": 480.965234375,
+  "test_rmse": 482.23123347192904,
+  "training_history": {
+    "final_loss": 0.03921888396143913,
+    "final_val_loss": 0.06152532994747162
+  }
+}

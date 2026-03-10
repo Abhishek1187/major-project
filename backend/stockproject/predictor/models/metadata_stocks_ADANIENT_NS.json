@@ -1,0 +1,21 @@
+{
+  "symbol": "ADANIENT.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    2096.0,
+    3217.25
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.8999999999999999
+  ],
+  "test_mae": 166.010107421875,
+  "test_rmse": 171.7800613394464,
+  "training_history": {
+    "final_loss": 0.021954242140054703,
+    "final_val_loss": 0.018970416858792305
+  }
+}

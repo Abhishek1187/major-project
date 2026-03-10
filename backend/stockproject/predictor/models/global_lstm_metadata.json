@@ -1,0 +1,53 @@
+{
+  "model_type": "global_lstm",
+  "training_symbols": [
+    "RELIANCE.NS",
+    "TCS.NS",
+    "INFY.NS",
+    "HDFCBANK.NS",
+    "ICICIBANK.NS",
+    "BHARTIARTL.NS",
+    "SBIN.NS",
+    "LT.NS",
+    "WIPRO.NS",
+    "MARUTI.NS",
+    "^NSEI",
+    "^NSEBANK",
+    "^NSEMDCP50",
+    "^CNXAUTO"
+  ],
+  "total_sequences": 2387,
+  "sequence_length": 60,
+  "global_feature_range": [
+    -911.5420209632575,
+    57755.19507788193
+  ],
+  "global_target_range": [
+    234.14999389648438,
+    57459.44921875
+  ],
+  "test_results": {
+    "RELIANCE.NS": {
+      "mae": 1161.586669921875,
+      "error_pct": 76.49163346759583,
+      "actual_avg": 1518.580029296875,
+      "pred_avg": 2680.16650390625
+    },
+    "TCS.NS": {
+      "mae": 1936.1662109375,
+      "error_pct": 56.49543056278263,
+      "actual_avg": 3427.12001953125,
+      "pred_avg": 1490.953857421875
+    },
+    "^NSEI": {
+      "mae": 382.769921875,
+      "error_pct": 1.502489680006012,
+      "actual_avg": 25475.710546875,
+      "pred_avg": 25799.900390625
+    }
+  },
+  "training_history": {
+    "final_loss": 0.00200997875072062,
+    "final_val_loss": 0.0036463476717472076
+  }
+}

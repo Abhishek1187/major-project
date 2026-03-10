@@ -1,0 +1,21 @@
+{
+  "symbol": "BHARTIARTL.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    1441.75,
+    2033.300048828125
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.9000000000000001
+  ],
+  "test_mae": 233.641943359375,
+  "test_rmse": 233.7265352318176,
+  "training_history": {
+    "final_loss": 0.032491397112607956,
+    "final_val_loss": 0.05319156497716904
+  }
+}

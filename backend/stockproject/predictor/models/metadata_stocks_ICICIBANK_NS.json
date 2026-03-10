@@ -1,0 +1,21 @@
+{
+  "symbol": "ICICIBANK.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    1161.6500244140625,
+    1462.199951171875
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.8999999999999999
+  ],
+  "test_mae": 18.36513671875,
+  "test_rmse": 23.307755777835073,
+  "training_history": {
+    "final_loss": 0.0469202995300293,
+    "final_val_loss": 0.055738091468811035
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "SBIN.NS",
+  "asset_type": "stocks",
+  "model_type": "transformer",
+  "training_data_points": 231,
+  "sequence_length": 60,
+  "price_range": [
+    688.7999877929688,
+    867.5
+  ],
+  "scaled_range": [
+    0.10000000000000009,
+    0.9000000000000004
+  ],
+  "test_mae": 19.56201171875,
+  "test_rmse": 20.25155175821464,
+  "training_history": {
+    "final_loss": 0.03334396332502365,
+    "final_val_loss": 0.0033222611527889967
+  }
+}

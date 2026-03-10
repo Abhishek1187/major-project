@@ -1,0 +1,21 @@
+{
+  "symbol": "^NSEBANK",
+  "asset_type": "indices",
+  "model_type": "transformer",
+  "training_data_points": 229,
+  "sequence_length": 60,
+  "price_range": [
+    47853.94921875,
+    57459.44921875
+  ],
+  "scaled_range": [
+    0.0,
+    1.0
+  ],
+  "test_mae": 3570.66171875,
+  "test_rmse": 3673.4243162235007,
+  "training_history": {
+    "final_loss": 0.06396085768938065,
+    "final_val_loss": 0.20416055619716644
+  }
+}
