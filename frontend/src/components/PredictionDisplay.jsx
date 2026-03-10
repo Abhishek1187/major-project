@@ -14,7 +14,7 @@ export default function PredictionDisplay({ symbol }) {
     const fetchPrice = async (symbol) => {
       try {
         let actualSymbol = symbol;
-        const symbolKey = symbol.toUpperCase().replace(/\\s+/g, '');
+        const symbolKey = symbol.toUpperCase().replace(/\s+/g, '');
         if (stockSymbols[symbolKey]) {
           actualSymbol = stockSymbols[symbolKey].NSE;
         }

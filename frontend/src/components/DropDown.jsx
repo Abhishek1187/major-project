@@ -5,8 +5,12 @@ const DropdownMenu = ({ title, items, onSelect }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="dropdown" onMouseLeave={() => setOpen(false)}>
-      <button onClick={() => setOpen(!open)} className="dropdown-button">
+    <div 
+      className="dropdown" 
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button className="dropdown-button">
         {title} ▾
       </button>
       {open && (

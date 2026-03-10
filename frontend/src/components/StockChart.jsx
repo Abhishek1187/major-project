@@ -1,26 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import stockSymbols from "../utils/stockSymbols.js";
 
 const OHLCVViewer = ({ symbol, onLatestPrice, setLoadingParent }) => {
-  const [chartOptions, setChartOptions] = useState({});
-  const [chartSeries, setChartSeries] = useState([{ data: [] }]);
-  const [earliestTime, setEarliestTime] = useState(null);
-  const [latestTime, setLatestTime] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchOHLCV = async (nseSymbol, limit = 375) => {
-    const res = await axios.get(`http://127.0.0.1:8000/api/ohlcv/${nseSymbol}/`, {
-      params: { limit },
+  const fetchOHLCV = async (nseSymbol) => {
+    const res = await axios.get(`/api/ohlcv/${nseSymbol}/`, {
+      params: { limit: 200 }, // Reduced for faster load
     });
     return res.data.filter(entry =>
       entry.Open != null && entry.High != null && entry.Low != null && entry.Close != null && entry.Datetime
     );
   };
 
-  const prepareChartData = (data) => {
-    return data.map(entry => ({
+  // Memoize chart configuration for performance
+  const { chartOptions, chartSeries } = useMemo(() => {
+    if (chartData.length === 0) {
+      return { chartOptions: {}, chartSeries: [{ data: [] }] };
+    }
+
+    const formattedData = chartData.map(entry => ({
       x: new Date(entry.Datetime),
       y: [
         parseFloat(entry.Open),
@@ -29,126 +32,177 @@ const OHLCVViewer = ({ symbol, onLatestPrice, setLoadingParent }) => {
         parseFloat(entry.Close),
       ],
     }));
-  };
 
-  const initializeChart = async () => {
-    const symbolObj = stockSymbols[symbol];
-    console.log(symbol);
-    const nseSymbol = symbolObj?.NSE;
-    if (!nseSymbol) return;
+    const allPrices = chartData.flatMap(entry => [
+      parseFloat(entry.Open),
+      parseFloat(entry.High),
+      parseFloat(entry.Low),
+      parseFloat(entry.Close)
+    ]);
+    const priceRange = Math.max(...allPrices) - Math.min(...allPrices);
+    const padding = priceRange * 0.08;
+    const minPrice = Math.min(...allPrices) - padding;
+    const maxPrice = Math.max(...allPrices) + padding;
 
-    setLoading(true);
-    setLoadingParent?.(true);
-
-    try {
-      const data = await fetchOHLCV(nseSymbol);
-      if (data.length > 0) {
-        const formattedData = prepareChartData(data);
-        const earliest = new Date(data[0].Datetime);
-        const latest = new Date(data[data.length - 1].Datetime);
-        setEarliestTime(earliest);
-        setLatestTime(latest);
-
-        const closePrices = data.map(entry => parseFloat(entry.Close));
-        const minPrice = Math.floor(Math.min(...closePrices));
-        const maxPrice = Math.ceil(Math.max(...closePrices));
-
-        setChartSeries([{ data: formattedData }]);
-        setChartOptions({
-          chart: {
+    return {
+      chartSeries: [{ name: 'Price', data: formattedData }],
+      chartOptions: {
+        chart: {
           type: "candlestick",
-          height: 700,
-          zoom: { enabled: true, type: "x" },
-          toolbar: { autoSelected: "zoom" },
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 300,
-            animateGradually: {
-              enabled: true,
-              delay: 150
+          background: 'transparent',
+          animations: { enabled: false }, // Disabled for faster render
+          toolbar: {
+            show: true,
+            tools: {
+              download: false,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true
             },
-            dynamicAnimation: {
-              enabled: true,
-              speed: 350
-            }
+            autoSelected: 'zoom'
+          },
+          zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
+        },
+        grid: {
+          borderColor: 'rgba(255,255,255,0.1)',
+          strokeDashArray: 3,
+        },
+        plotOptions: {
+          candlestick: {
+            colors: {
+              upward: '#22c55e',
+              downward: '#ef4444'
+            },
+            wick: { useFillColor: true }
           }
         },
-          title: { text: `${symbol}`, align: "left" },
-          xaxis: {
-            type: "datetime",
-            labels: {
-              rotate: -45,
-              style: { fontSize: "10px" },
-              datetimeUTC: false,
-            },
-            min: earliest.getTime(),
-            max: latest.getTime(),
-          },
-          yaxis: {
-            tooltip: {
-              enabled: true
-            },
-            tickAmount: 6,
-            labels: {
-              formatter: val => val.toFixed(2),
-              style: { fontSize: "10px" },
-            },
-            min: minPrice,
-            max: maxPrice,
-          },
-          tooltip: {
-            enabled: true,
-            shared: true,
-            custom: function({ series, seriesIndex, dataPointIndex, w }) {
-              const o = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
-              const h = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
-              const l = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
-              const c = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
-              return (
-                '<div class="apexcharts-tooltip-candlestick">' +
-                '<div>Open: ' + o.toFixed(2) + '</div>' +
-                '<div>High: ' + h.toFixed(2) + '</div>' +
-                '<div>Low: ' + l.toFixed(2) + '</div>' +
-                '<div>Close: ' + c.toFixed(2) + '</div>' +
-                '</div>'
-              );
+        xaxis: {
+          type: "datetime",
+          labels: {
+            style: { colors: '#94a3b8', fontSize: '11px' },
+            datetimeUTC: false,
+            datetimeFormatter: {
+              hour: 'HH:mm',
+              day: 'dd MMM',
             }
           },
-          plotOptions: {
-            candlestick: { wick: { useFillColor: true } },
+          axisBorder: { color: 'rgba(255,255,255,0.1)' },
+          axisTicks: { color: 'rgba(255,255,255,0.1)' },
+        },
+        yaxis: {
+          tooltip: { enabled: true },
+          labels: {
+            formatter: val => '₹' + val.toFixed(2),
+            style: { colors: '#94a3b8', fontSize: '11px' },
           },
-          dataLabels: { enabled: false },
-        });
-
-        const latestClose = parseFloat(data[data.length - 1].Close).toFixed(2);
-        onLatestPrice?.(latestClose);
+          min: minPrice,
+          max: maxPrice,
+        },
+        tooltip: {
+          theme: 'dark',
+          custom: function({ seriesIndex, dataPointIndex, w }) {
+            const o = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
+            const h = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
+            const l = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
+            const c = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
+            const change = ((c - o) / o * 100).toFixed(2);
+            const color = c >= o ? '#22c55e' : '#ef4444';
+            return `<div style="padding:12px;background:#1e293b;border-radius:8px;border:1px solid #334155;">
+              <div style="margin-bottom:8px;font-weight:600;color:#f1f5f9;">OHLC Data</div>
+              <div style="display:grid;gap:4px;font-size:13px;">
+                <div style="color:#94a3b8;">Open: <span style="color:#f1f5f9;font-weight:500;">₹${o.toFixed(2)}</span></div>
+                <div style="color:#94a3b8;">High: <span style="color:#22c55e;font-weight:500;">₹${h.toFixed(2)}</span></div>
+                <div style="color:#94a3b8;">Low: <span style="color:#ef4444;font-weight:500;">₹${l.toFixed(2)}</span></div>
+                <div style="color:#94a3b8;">Close: <span style="color:#f1f5f9;font-weight:500;">₹${c.toFixed(2)}</span></div>
+                <div style="color:#94a3b8;margin-top:4px;padding-top:4px;border-top:1px solid #334155;">Change: <span style="color:${color};font-weight:600;">${change}%</span></div>
+              </div>
+            </div>`;
+          }
+        },
+        dataLabels: { enabled: false },
       }
-    } catch (error) {
-      console.error("Error loading chart data:", error);
-    } finally {
-      setLoading(false);
-      setLoadingParent?.(false);
-    }
-  };
+    };
+  }, [chartData]);
 
   useEffect(() => {
-    initializeChart();
+    const loadChart = async () => {
+      const symbolObj = stockSymbols[symbol];
+      const nseSymbol = symbolObj?.NSE;
+      
+      if (!nseSymbol) {
+        setError(`Symbol "${symbol}" not found`);
+        setLoading(false);
+        setLoadingParent?.(false);
+        return;
+      }
+
+      setError(null);
+      setChartData([]);
+      setLoading(true);
+      setLoadingParent?.(true);
+
+      try {
+        const data = await fetchOHLCV(nseSymbol);
+        if (data.length > 0) {
+          setChartData(data);
+          const latestClose = parseFloat(data[data.length - 1].Close);
+          onLatestPrice?.(latestClose.toFixed(2));
+        } else {
+          setError('No data available');
+        }
+      } catch (err) {
+        console.error("Chart error:", err);
+        setError(`Failed to load: ${err.message}`);
+      } finally {
+        setLoading(false);
+        setLoadingParent?.(false);
+      }
+    };
+
+    loadChart();
   }, [symbol]);
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '350px', color: '#94a3b8' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: '40px', height: '40px', border: '3px solid rgba(6,182,212,0.2)', borderTop: '3px solid #06b6d4', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 12px' }}></div>
+          <p>Loading chart data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '350px', color: '#ef4444' }}>
+        <div style={{ textAlign: 'center' }}>
+          <i className="fas fa-exclamation-circle" style={{ fontSize: '2rem', marginBottom: '8px' }}></i>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (chartData.length === 0) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '350px', color: '#94a3b8' }}>
+        <p>No chart data available</p>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ overflowX: "auto", paddingBottom: "10px", width: "100%", maxWidth: "1200px", margin: "0 auto" }}>
-      {loading ? (
-        <p>Loading chart...</p>
-      ) : (
-        <ReactApexChart
-          options={chartOptions}
-          series={chartSeries}
-          type="candlestick"
-          height={400}
-          width="100%"
-        />
-      )}
+    <div style={{ width: '100%' }}>
+      <ReactApexChart
+        options={chartOptions}
+        series={chartSeries}
+        type="candlestick"
+        height={350}
+      />
     </div>
   );
 };

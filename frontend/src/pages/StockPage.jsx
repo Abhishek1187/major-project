@@ -11,6 +11,13 @@ const StockPage = () => {
   const [chartLoaded, setChartLoaded] = useState(false);
   const [showPrediction, setShowPrediction] = useState(false);
 
+  // Reset state when symbol changes to prevent auto-prediction on new stock
+  React.useEffect(() => {
+    setShowPrediction(false);
+    setChartLoaded(false);
+    setLatestPrice(null);
+  }, [symbol]);
+
   const handleChartLoad = () => {
     setChartLoaded(true);
   };

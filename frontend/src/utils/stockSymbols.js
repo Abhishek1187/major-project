@@ -3,11 +3,11 @@ const stockSymbols = {
     NSE: "RELIANCE.NS",
     BSE: "500325.BO"
   },
-  "AXIS BANK": {
+  "AXISBANK": {
     NSE: "AXISBANK.NS",
-    BSE: ".BO"
+    BSE: "532215.BO"
   },
-  "HDFC Bank": {
+  "HDFCBANK": {
     NSE: "HDFCBANK.NS",
     BSE: "500180.BO"
   },
@@ -19,7 +19,7 @@ const stockSymbols = {
     NSE: "ONGC.NS",
     BSE: "500312.BO"
   },
-  "SBIBank": {
+  "SBIBANK": {
     NSE: "SBIN.NS",
     BSE: "500112.BO"
   },

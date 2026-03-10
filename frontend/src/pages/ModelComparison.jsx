@@ -58,7 +58,7 @@ const ModelComparison = () => {
     if (!selectedStock) return;
     setLoading(true);
     try {
-      const response = await axios.get(`/api/model_comparison?symbol=${selectedStock}`);
+      const response = await axios.get(`/api/model_comparison/?symbol=${selectedStock}`);
       console.log("Model comparison API response:", response.data);
       setPredictions(response.data);
     } catch (error) {

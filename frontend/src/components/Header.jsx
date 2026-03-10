@@ -4,11 +4,37 @@ import SearchBar from './SearchBar';
 import './styles/Header.css';
 import { useNavigate, Link } from 'react-router-dom';
 
+// Map display names to stockSymbols keys
+const stockDisplayMap = {
+  'Reliance': 'RELIANCE',
+  'Airtel': 'AIRTEL',
+  'ONGC': 'ONGC',
+  'Adani Enterprises': 'ADANIENTERPRISES',
+  'Adani Port': 'ADANIPORT',
+  'Infosys': 'INFOSYS',
+  'HDFC Bank': 'HDFCBANK',
+  'Axis Bank': 'AXISBANK',
+  'Bajaj Finance': 'BAJAJFINANCE',
+  'SBI Bank': 'SBIBANK'
+};
+
+const indexDisplayMap = {
+  'Nifty 50': 'NIFTY50',
+  'Bank Nifty': 'BANKNIFTY',
+  'Nifty Midcap': 'NIFTYMIDCAP',
+  'Nifty Auto': 'NIFTYAUTO'
+};
+
 const Header = () => {
   const navigate = useNavigate();
 
-  const handleSelect = (item) => {
-    const symbol = item.replace(/\s+/g, '').toUpperCase();
+  const handleStockSelect = (item) => {
+    const symbol = stockDisplayMap[item] || item.replace(/\s+/g, '').toUpperCase();
+    navigate(`/stock/${symbol}`);
+  };
+
+  const handleIndexSelect = (item) => {
+    const symbol = indexDisplayMap[item] || item.replace(/\s+/g, '').toUpperCase();
     navigate(`/stock/${symbol}`);
   };
 
@@ -25,13 +51,13 @@ const Header = () => {
         <div className="nav-group">
           <DropdownMenu 
             title={<><i className="fas fa-chart-line"></i>Indices</>}
-            items={['Nifty 50', 'Bank Nifty', 'Nifty MIDCAP', 'Nifty Auto', 'Nifty Finance']}
-            onSelect={handleSelect}
+            items={Object.keys(indexDisplayMap)}
+            onSelect={handleIndexSelect}
           />
           <DropdownMenu 
             title={<><i className="fas fa-building"></i>Stocks</>}
-            items={['Reliance', 'Airtel', 'ONGC', 'Adani Enterprises', 'Adani Port', 'Infosys', 'HDFC Bank', 'Axis Bank', 'Bajaj Finance', 'SBI Bank']}
-            onSelect={handleSelect}
+            items={Object.keys(stockDisplayMap)}
+            onSelect={handleStockSelect}
           />
         </div>
         <div className="search-container">
