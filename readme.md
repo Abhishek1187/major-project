@@ -49,4 +49,4 @@ A comprehensive stock prediction system built with machine learning, featuring a
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License
